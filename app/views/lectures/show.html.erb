@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Content:</strong>
+  <%= raw @lecture.content %>
+</p>
+
+<p>
+  <strong>Attachment:</strong>
+  <% if @lecture.attachment? %>
+  <%= @lecture.attachment %>
+  <% else %>
+  <h4>No Attachment</h4>
+  <% end %>
+</p>
+
+<p>
+  <strong>Course:</strong>
+  <%= @lecture.course.title %>
+</p>
+
+<%= render partial: "comments/template", locals: {commentable: @lecture, new_comment: @comment} %> 
+
+<% if user_signed_in? && @lecture.user == current_user %>
+<%= link_to 'Edit', edit_course_lecture_path(@lecture.course,@lecture) %> |
+<% end %>
+<%= link_to 'Back', course_lectures_path %>

@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @course.title %>
+</p>
+
+<strong>image</strong>
+<%= image_tag(@course.user.image_url(:thumb).to_s) if @course.user.image? %>
+<% if user_signed_in? && @course.user == current_user %>
+  <%= link_to 'Edit', edit_course_path(@course) %> |
+<% end %>  
+<%= link_to 'Back', courses_path %> |
+
+<%= link_to 'lectures', course_lectures_path(@course) %>

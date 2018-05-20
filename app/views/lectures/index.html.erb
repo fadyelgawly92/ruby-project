@@ -1,0 +1,63 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Lectures</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Content</th>
+      <th>Attachment</th>
+      <th>Course</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @lectures.each do |lecture| %>
+      <tr>
+        <td><%= raw lecture.content %></td>
+        <% if lecture.attachment? %>
+          <td><%= lecture.attachment %></td>
+        <% else %>
+          <td><p>No Attachment</p></td>
+        <% end %>
+        <td><%= lecture.course.title %></td>
+        <td><%= link_to 'download' , download_course_lecture_path(lecture.course,lecture) %></td>
+        <td><%= link_to 'show', course_lecture_path(lecture.course,lecture) %></td>
+        <% if user_signed_in? && lecture.user == current_user %>
+          <td><%= link_to 'Edit', edit_course_lecture_path(lecture.course,lecture) %></td>
+          <td><%= link_to 'Destroy', course_lecture_path(lecture.course,lecture), method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>  
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<% @lectures.each do |lecture| %>
+    <h4><%= link_to raw(lecture.content), course_lecture_path(lecture.course, lecture) %><br>
+      Submitted <%= time_ago_in_words(lecture.created_at) %> 
+      by <%= lecture.course.user.name %>
+    </h4>
+  <%= link_to like_course_lecture_path(lecture.course , lecture), method: :put do %>
+  Upvote
+  <%= lecture.get_upvotes(:vote_scope => 'likes').size %>
+  <% end %> |
+  <%= link_to dislike_course_lecture_path(lecture.course , lecture), method: :put do %>
+  Downvote
+  <%= lecture.get_downvotes(:vote_scope => 'likes').size %>
+  <% end %> |
+  <%= link_to spam_course_lecture_path(lecture.course , lecture), method: :put do %>
+  Spam
+  <%= lecture.find_votes_for(:vote_scope => 'spam').size %>
+  <% end %>
+<% end %>
+<br>
+<br>
+<br>
+<% if can? :create , @lecture %>
+<strong><h2><%= link_to 'New Lecture', new_course_lecture_path %></h2></strong>
+<% end %>
+<br>
+<br>
+<%= link_to 'back to courses', courses_path %>
